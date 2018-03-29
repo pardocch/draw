@@ -1,0 +1,304 @@
+
+ul li ul.dropdown{
+    background: #f2f2f2;
+	border-radius: 7%;
+    display: none;
+    left: 0px;
+    opacity: 0.9;
+    position: absolute;
+	padding-left: 5px;
+    width: 100%;
+    z-index: 999;
+}
+ul li:hover ul.dropdown{
+    display: block;	
+}
+ul li ul.dropdown li{
+    display: block;
+}
+ul li ul.dropdown li a{
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+ul li ul.dropdown li a:hover{
+	background: #E0E0E0;
+	border-radius: 7%;
+	color: #003D79;
+    display: block;
+	opacity: 0.7;
+}
+
+
+ul li ul.dropdown li ul.dropdown{
+    display: none;
+    left: 103px;
+    position: absolute;
+    top: 40px;
+    width: 100%;
+}
+ul li ul.dropdown li:hover ul.dropdown{
+    display: block;
+}
+ul li ul.dropdown li ul.dropdown li div{
+    display: block;
+}
+ul li ul.dropdown li ul.dropdown li div a{
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+ul li ul.dropdown li ul.dropdown li div a:hover{
+	background: #E0E0E0;
+	border-radius: 7%;
+	color: #003D79;
+    display: block;
+	opacity: 0.9;
+}
+
+@media only screen
+and (min-device-width : 375px) 
+and (max-device-width : 667px) { 
+    div.form-group div.input-group{
+        float: left;
+        width: 50%;
+    }
+    ul.nav.nav-pills{
+        
+    }
+}
+/*
+.css-treeview .divul,
+.css-treeview .divli
+{
+    padding: 0;
+    margin: 0;
+}
+
+.css-treeview input
+{
+    position: absolute;
+    opacity: 0;
+}
+
+.css-treeview
+{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.css-treeview .divul 
+{
+    margin: 0 0 0 22px;
+}
+
+.css-treeview .divli ~ .divul
+{
+    display: none;
+}
+
+.css-treeview label,
+.css-treeview label::before,
+{
+    cursor: pointer;
+}
+
+.css-treeview .divli>input:checked ~ .divul
+{
+    display: block;
+}
+
+.css-treeview label,
+.css-treeview label::before
+{
+    background: url("../img/icon/icons.png") no-repeat;
+}
+
+.css-treeview label,
+.css-treeview label::before
+{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.css-treeview label
+{
+    background-position: 18px 0;
+}
+
+.css-treeview label::before
+{
+    content: "";
+    width: 16px;
+    margin: 0 22px 0 0;
+    vertical-align: middle;
+    background-position: 0 -32px;
+}
+ */
+/*.css-treeview input:checked + label::before
+{
+    background-position: 0 -16px;
+}*/
+
+#treeroot input
+{
+    position: absolute;
+    opacity: 0;
+}
+
+#treeroot input + label + .divul
+{
+    margin: 0 0 0 22px;
+}
+
+#treeroot label,
+#treeroot label::before
+{
+    cursor: pointer;
+}
+ 
+#treeroot label,
+#treeroot label::before
+{
+    background: url("../img/icon/icons.png") no-repeat;
+}
+ 
+#treeroot label,
+#treeroot a,
+#treeroot label::before
+{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+}
+ 
+#treeroot label
+{
+    background-position: 0px 0;
+}
+ 
+#treeroot label::before
+{
+    content: "";
+    width: 16px;
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+    background-position: 0;
+}
+
+
+
+.css-treeview .divul,
+.css-treeview .divli
+{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+ 
+.css-treeview input
+{
+    position: absolute;
+    opacity: 0;
+}
+ 
+.css-treeview
+{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+ 
+.css-treeview a
+{
+    color: #00f;
+    text-decoration: none;
+}
+ 
+.css-treeview a:hover
+{
+    text-decoration: underline;
+}
+ 
+.css-treeview input + label + .divul
+{
+    margin: 0 0 0 22px;
+}
+ 
+.css-treeview input ~ .divul
+{
+    display: none;
+}
+ 
+.css-treeview label,
+.css-treeview label::before
+{
+    cursor: pointer;
+}
+ 
+.css-treeview input:disabled + label
+{
+    cursor: default;
+    opacity: .6;
+}
+ 
+.css-treeview input:checked:not(:disabled) ~ .divul
+{
+    display: block;
+}
+ 
+.css-treeview label,
+.css-treeview label::before
+{
+    background: url("../img/icon/icons.png") no-repeat;
+}
+ 
+.css-treeview label,
+.css-treeview a,
+.css-treeview label::before
+{
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+}
+ 
+.css-treeview label
+{
+    background-position: 18px 0;
+}
+ 
+.css-treeview label::before
+{
+    content: "";
+    width: 16px;
+    margin: 0 22px 0 0;
+    vertical-align: middle;
+    background-position: 0 -32px;
+}
+ 
+.css-treeview input:checked + label::before
+{
+    background-position: 0 -16px;
+}
+
+
+[folderselection="true"]{
+    background:#8ad;
+    color:#fff;
+  }
+
+.modal-body {
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.filepublic:hover{
+    background: #9D9D9D;
+}

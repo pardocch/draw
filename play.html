@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>draw</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom Google Web Font -->
+    <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/google.fonts.css">
+
+    <!-- Add custom CSS here -->
+    <link rel="stylesheet" href="assets/css/landing-page.css">
+    <link rel="stylesheet" href="assets/css/resize.css">
+    <link rel="stylesheet" href="assets/css/slide.css">
+
+    <!-- JavaScript -->
+    <!-- <script type='text/javascript' src="{{ asset('js/jquery-1.10.2.js') }}"></script> -->
+    <script type='text/javascript' src="assets/js/screenfull.js"></script>
+    <script type='text/javascript' src="assets/js/fabric.js"></script>
+
+    <!-- Vue.js -->
+    <!-- <script type='text/javascript' src="{{ asset('js/vue.js') }}"></script> -->
+    <!-- axios -->
+    <script type='text/javascript' src="assets/js/axios.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script type='text/javascript' src="assets/js/pdfjs/build/pdf.js"></script>    
+
+</head>
+<style>
+    html {
+        touch-action: manipulation;
+    }
+    #func-goNext, #func-goPrevious
+    {
+        cursor: pointer;
+    }
+    ::selection{
+        background-color: rgba(255, 255, 255,.0);
+    }
+    ::-moz-selection {
+        background-color: rgba(255, 255, 255,.0);
+        /*background: #FFFFFF;
+        opacity: 0;*/
+    }
+    #edu_canvas{
+        display: inline-block;
+    }
+    body{
+        overflow: scroll;
+    }
+    .navDisabled{
+        color:#CCC;
+    }
+    .pull-right.dropdown.active .dropdown-menu{
+        display: block;
+    }
+    .pull-right.dropdown.active .dropdown-toggle{
+        background-color: #CCCCCC;
+    }
+    .pagebtn{
+        font-size: 20px;
+    }
+    .pagebtn:hover{
+        background-color: #E0E0E0;
+    }
+    .pagebtntext{
+        text-decoration: none !important;
+        color: #7B7B7B;
+    }
+    .pagebtn:hover .pagebtntext{
+        text-decoration: none !important;
+        color: #7B7B7B;
+    }
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+    .color-blocks{
+        position: fixed;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        padding: 6px 0;
+        font-size: 12px;
+        line-height: 1.428571429;
+        border-radius: 100%;
+        border: 2px solid #000000;
+        cursor: pointer;
+    }
+    .rainbow{
+        background: grey; /* not working, let's see some red */
+        background: -moz-linear-gradient( top ,
+            rgba(255, 0, 0, 1) 0%,
+            rgba(255, 255, 0, 1) 15%,
+            rgba(0, 255, 0, 1) 30%,
+            rgba(0, 255, 255, 1) 50%,
+            rgba(0, 0, 255, 1) 65%,
+            rgba(255, 0, 255, 1) 80%,
+            rgba(255, 0, 0, 1) 100%);
+        background: -webkit-gradient(linear,  left top,  left bottom, 
+            color-stop(0%, rgba(255, 0, 0, 1)), 
+            color-stop(15%, rgba(255, 255, 0, 1)),
+            color-stop(30%, rgba(0, 255, 0, 1)),
+            color-stop(50%, rgba(0, 255, 255, 1)),
+            color-stop(65%, rgba(0, 0, 255, 1)),
+            color-stop(80%, rgba(255, 0, 255, 1)),
+            color-stop(100%, rgba(255, 0, 0, 1)));
+    }
+    .black{
+        background-color: rgb(0, 0, 0);
+    }
+    .white{
+        background-color: rgb(255, 255, 255);
+    }
+    .red{
+        background-color: rgb(255, 0, 0);
+    }
+    .green{
+        background-color: rgb(0, 255, 0);
+    }
+    .blue{
+        background-color: rgb(0, 0, 255);
+    }
+    .yellow{
+        background-color: rgb(255, 255, 0);
+    }
+    .cyan{
+        background-color: rgb(0, 255, 255);
+    }
+    .pink{
+        background-color: rgb(255, 0, 255);
+    }
+    .left-side-left{
+        left: 95px;
+    }
+    .left-side-middle{
+        left: 135px;
+    }
+    .left-side-right{
+        left: 175px;
+    }
+    .right-side-left{
+        right: 95px;
+    }
+    .right-side-middle{
+        right: 135px;
+    }
+    .right-side-right{
+        right: 175px;
+    }
+    #drawtool{
+        display: none;
+        z-index: 5;
+    }
+    .menulist_v_h{
+        z-index: 5;
+    }
+    #menubtn{
+        z-index: 5;
+    }
+    #cntnr{
+        z-index: 2;
+    }
+    .menulist: hover{
+        color: white;
+    }
+</style>
+<body oncontextmenu="return false">
+	<div class="centerdiv" id="centerdiv" style="position: relative; width: 95%; top: 0px; left: 2.5%; height: 650px;">
+		<img src="" id="page_img" style="display: none;">
+		<canvas id="edu_canvas" style="position: inherit; border: 1px solid #999;"></canvas>
+	</div>
+	<div id="cntnr">
+		<ul id="items">
+			<li id="callmenu">Call Menu</li>
+			<li id="menustatus">Hide Menu</li>
+		</ul>
+	</div>
+	<div><span id="menubtn" class="btn btn-default" style="bottom: 40px; left: 5px; position: fixed; width: 75px; height: 75px; text-align: center; padding: 6px 0; font-size: 12px; line-height: 1.428571429; border-radius: 100%; z-index: 5; background-color: #0066FF; border: 4px solid #0066FF; box-shadow: inset 0 0 0 5px white;"><p style="color: #FFFFFF; margin-top: 18px; font-size: 16px;">MENU</p></span></div>
+	<div id="menulist_v" class="col-xs-4 menulist_v_h" style="position: fixed; left: 0px; bottom: 140px; width: 5%; text-align: center; display: none;">
+		<span id="blackboard" class="menulist"><i class="fa fa-square-o"></i></span>
+		<span id="crop" class="menulist"><i class="fa fa-search-plus"></i></span>
+		<span id="eraser_all" class="menulist"><i class="fa fa-eraser"><span class="fa fa-stack-1x" style="font-size: 8px; z-index: 1; margin-top: 30px; margin-left: 15px;"><font face="verdana">all</font></span></i></span>
+		<!-- <span id="eraser" class="menulist"><i class="fa fa-eraser"></i></span> -->
+		<span id="pencil" class="menulist"><i class="fa fa-pencil"></i></span>
+		<span id="drag" class="menulist"><i class="fa fa-hand-o-up"></i></span>
+		<span id="fullscreen" class="menulist" onclick="fullScreen()"><i class="fa fa-expand"></i></span>
+		<span id="save" class="menulist"><i class="fa fa-save"></i></span>
+	</div>
+	<div id="menulist_h" class="menulist_v_h" style="position: fixed; left: 105px; bottom: 5px; text-align: center; display: none;">
+		<div class="col-xs-2" style="bottom: -25px;"><span id="prev" class="menulist" style="color: grey;"><i class="fa fa-caret-left"></i></span></div>
+		<div class="col-xs-3" style="bottom: 10px;"><span id="lastpage" class="menulist"><i class="fa fa-caret-up"></i></span><span id="nextpage" class="menulist" style=""><i class="fa fa-caret-down"></i></span></div>
+		<div class="col-xs-2" style="bottom: -25px;"><span id="next" class="menulist" style="color: grey;"><i class="fa fa-caret-right"></i></span></div>
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2" style="bottom: -25px;"><span id="prevpage" class="menulist"><i class="fa fa-chevron-left" onclick="goback();"><font style="font-size: 20px;" face="verdana">ESC</font></i></span></div>
+	</div>
+	<div id="drawtool" class="left left-side-left" style="width: 6%; bottom: 25%; position: fixed;">
+		<span class="color-blocks black left left-side-left"></span>
+		<span class="color-blocks white middle left-side-middle"></span>
+		<span class="color-blocks red right left-side-right"></span>
+		<br><br>
+		<span class="color-blocks green left left-side-left"></span>
+		<span class="color-blocks blue middle left-side-middle"></span>
+		<span class="color-blocks yellow right left-side-right"></span>
+		<br><br>
+		<span class="color-blocks cyan left left-side-left"></span>
+		<span class="color-blocks pink middle left-side-middle"></span>
+		<span class="color-blocks rainbow right left-side-right"></span>
+		<br><br>
+		<div class="left left-side-left">
+			<span id="pencil_width">Width：5</span>
+			<input type="range" min="1" max="20" value="5" class="slider" id="drawing-width" style="display: inline-block;">
+		</div>
+	</div>
+	<canvas id="createNameTag" style="display: none;"></canvas>
+</body>
+</html>
+<script>
+	let canvas_width = document.getElementById('centerdiv').clientWidth;
+	// let canvas_height = document.body.clientHeight-50;
+	let canvas_height = window.screen.height;
+	// let canvas = new fabric.Canvas('edu_canvas',{ width: (window.screen.availWidth-(window.screen.availWidth*0.05))*0.95, height: window.screen.availHeight*0.85 });
+	let canvas = new fabric.Canvas('edu_canvas',{ width: canvas_width, height: canvas_height });
+	let context = canvas.getContext('2d');
+	let fullscreened = false;
+	let pdfDoc = null;
+	let currentPage = 1 , pageNum = 0;
+	let pages = [];
+	let actionStack = new Array();
+	let forwardStack = new Array();
+	let canvasoff = document.createElement('canvas');
+	let ctx = canvasoff.getContext('2d');
+	let mode = '';
+	let drawingmode = '';
+	let pen = 'default';
+	let rectArr = new Array();
+	let url = "sample.pdf"; // filename
+	PDFJS.disableWorker = false;
+	
+	PDFJS.getDocument(url).then(function(_pdfDoc){
+		pdfDoc = _pdfDoc;
+		if (currentPage <= pdfDoc.numPages) getPage();
+		function getPage() {
+			pdfDoc.getPage(currentPage).then(function(page) {
+				let viewport = page.getViewport(canvas.width / page.getViewport(1.0).width); //scale
+				if (currentPage==1) {
+					document.getElementById('centerdiv').height = viewport.height;
+					canvas.setHeight(viewport.height);
+				}
+				canvasoff.height = viewport.height;
+				canvasoff.width = viewport.width;
+				let renderContext = {
+					canvasContext: ctx,
+					viewport: viewport
+				};
+				page.render(renderContext).then(function() {
+					// store compressed image data in array
+					let b64 = canvasoff.toDataURL();
+					pages.push(b64);
+					if (currentPage < pdfDoc.numPages) {
+						currentPage++;
+						getPage();
+					} else {
+						done();
+					}
+				});
+			});
+		}
+	});
+	
+	// functions
+	function done() {
+		renderPage(0);
+	 }
+	function renderPage(num) {
+		window.scrollTo(0, 0);
+		currentPage=pageNum+1;
+		document.getElementById('page_img').setAttribute('src', pages[num]);
+		let imgElement = document.getElementById('page_img');
+		imgElement.onload = function(){
+			img_info(imgElement, num);
+		};
+	 }
+	function img_info(imgElement, num) {
+		let page_img = new Object();
+		page_img.width = document.getElementById('page_img').width;
+		page_img.height = document.getElementById('page_img').height;
+		let imgInstance = new fabric.Image(imgElement, {
+		  left: 0,
+		  top: 0,
+		  scaleX: canvas_width/page_img.width,
+		  scaleY: canvas_width/page_img.width,
+		});
+		imgInstance.selectable=false;
+		canvas.clear().renderAll();
+		canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas), {
+		  originX: 'left',
+		  originY: 'top'
+		});
+	 }
+
+	function nextpage(){
+		if (pageNum < pdfDoc.numPages-1) {
+			pageNum++;
+			renderPage(pageNum);
+		}
+	}
+	function lastpage(){
+		if (pageNum > 0) {
+			pageNum--;
+			renderPage(pageNum);
+		}
+	}
+
+	function fullScreen(){
+		if (!screenfull.enabled) return false;
+		if(fullscreened ===false){
+			screenfull.request();
+			fullscreened = true;
+		}else{
+			screenfull.exit();
+			fullscreened = false;
+		}
+	 }
+
+	// draw method
+	 function draw(drawmode){
+		let drawing_width = document.querySelector("#drawing-width");
+		switch (drawingmode) {
+			case 'pencil' :
+			default :
+				drawingmode = drawmode;
+				canvas.isDrawingMode = true;
+				canvas.freeDrawingBrush.color = "rgb(255, 0, 0)";
+				canvas.freeDrawingBrush.width = parseInt(drawing_width.value);
+				break;
+		}
+	 }
+	 function drawTool(){
+		let drawtool = document.querySelector("#drawtool");
+		(drawtool.style.display === '') ? drawtool.style.display = 'block' : drawtool.style.display = '';
+	 }
+	 function canceldraw(){
+	 	canvas.isDrawingMode = false;
+	 }
+
+	// section zoom-in
+	 function crop(){
+		pen="crop";
+		canvas.selectionColor = 'rgba(0,255,0,0.3)';
+		canvas.selectionLineWidth = 5;
+		canvas.defaultCursor="crosshair";
+		canvas.selection = true;
+	 }
+
+	 function drag(){
+	 	canvas.selection = false;
+	 }
+
+	 function canceldrag(){
+	 	canvas.selection = true;
+	 }
+
+	canvas.ontouchstart = function(e) {
+	  if (e.touches) e = e.touches[0];
+	  return false;
+	}
+
+	 function capture(x1, x2, y1, y2){
+	 	let startX, startY;
+	 	(x1 > x2) ? startX = x2 : startX = x1;
+	 	(y1 > y2) ? startY = y2 : startY = y1;
+	 	let width = Math.abs(x2 - x1);
+		let height = Math.abs(y2 - y1);
+		let ctx = canvas.getContext("2d");
+		let myImageData = ctx.getImageData(startX, startY, width, height);
+		let buffer = document.createElement('canvas');
+		let bufferCtx = buffer.getContext("2d");
+		buffer.width = width;
+		buffer.height = height;
+		bufferCtx.putImageData(myImageData, 0, 0);
+		console.log(buffer.toDataURL('image/png'));
+	 }
+
+	 let board_no = 1, div_no = 1;
+	 let board_canvas = new Array();
+	 function blackboard(){
+	 	let newDiv = document.createElement("div");
+	 	newDiv.id = "div"+div_no;
+
+	 	let newCanvas = document.createElement("canvas");
+	 	newCanvas.id = "board"+board_no;
+	 	newCanvas.style.height = "100%";
+	 	newCanvas.style.width = "100%";
+
+	 	let newMinimize = document.createElement("span");
+	 	newMinimize.className = "glyphicon glyphicon-minus";
+	 	newMinimize.onmousedown = () => { minimize(newDiv, "blackboard") };
+	 	newMinimize.style.color = "#3c3c3c";
+	 	newMinimize.style.float = "right";
+	 	newMinimize.style.right = "50px";
+	 	newMinimize.style.fontSize = "12px";
+	 	newMinimize.style.position = "fixed";
+	 	newMinimize.style.top = "95vh";
+	 	newMinimize.style.zIndex = "2";
+	 	newMinimize.style.lineHeight = "1.428571429";
+	 	newMinimize.style.borderRadius = "100%";
+		newMinimize.style.border = "2px solid #00db00";
+		newMinimize.style.cursor = "pointer";
+		newMinimize.style.width = "25px";
+		newMinimize.style.height = "25px";
+		newMinimize.style.textAlign = "center";
+		newMinimize.style.padding = "6px 0";
+		newMinimize.style.backgroundColor = "#FFFFFF";
+
+	 	let newClose = document.createElement("span");
+	 	newClose.className = "glyphicon glyphicon-remove";
+	 	newClose.onmousedown = () => { close(newDiv) };
+	 	newClose.style.color = "#3c3c3c";
+	 	newClose.style.float = "right";
+	 	newClose.style.right = "15px";
+	 	newClose.style.fontSize = "12px";
+	 	newClose.style.position = "fixed";
+	 	newClose.style.top = "95vh";
+	 	newClose.style.zIndex = "2";
+	 	newClose.style.lineHeight = "1.428571429";
+	 	newClose.style.borderRadius = "100%";
+		newClose.style.border = "2px solid #ff0000";
+		newClose.style.cursor = "pointer";
+		newClose.style.width = "25px";
+		newClose.style.height = "25px";
+		newClose.style.textAlign = "center";
+		newClose.style.padding = "6px 0";
+		newClose.style.backgroundColor = "#FFFFFF";
+
+		document.body.insertBefore(newDiv, document.body.firstChild);
+		document.getElementById("div"+div_no).appendChild(newCanvas);
+		document.getElementById("div"+div_no).appendChild(newMinimize);
+		document.getElementById("div"+div_no).appendChild(newClose);
+
+	 	document.getElementById("centerdiv").style.display = "none";
+	 	board_canvas[board_no] = new fabric.Canvas("board"+board_no,{backgroundColor: "#006030", width: window.screen.availWidth, height: window.screen.availHeight+50, isDrawingMode: true});
+	 	board_canvas[board_no].renderAll();
+		board_canvas[board_no].freeDrawingBrush.color = "white";
+		board_canvas[board_no].freeDrawingBrush.width = 5;
+	 	div_no++;
+	 	board_no++;
+	 }
+
+	function backAction(){
+		if (actionStack[currentPage] && actionStack.hasOwnProperty(currentPage) && actionStack[currentPage].length>0) {
+    		let obj=actionStack[currentPage].pop();
+    		if (obj['action']=="create" && obj['type']=="path") {
+    			for (let i = 0; i < rectArr[currentPage].length; i++) {
+					if(rectArr[currentPage][i]['obj']['currentWidth']==obj['obj']['currentWidth'] && 
+						rectArr[currentPage][i]['obj']['currentHeight']==obj['obj']['currentHeight']){
+						rectArr[currentPage].splice(i, 1);
+					}
+				};
+	    		canvas.remove(obj['obj']);
+    			forwardPush(obj['obj'], "path", "remove");
+    		}
+
+    		if (obj['action']=="remove" && obj['type']=="rect") {
+    			let aobj=new Array();
+    			aobj['obj']=obj['obj'];
+    			aobj['scale']=1;
+    			aobj['type']="rect";
+    			rectArr[currentPage].push(aobj);
+    			canvas.add(obj['obj']);
+    			forwardPush(obj['obj'], "rect", "create");
+    		}
+    		if (obj['action']=="remove" && obj['type']=="path") {
+    			let aobj=new Array();
+    			aobj['obj']=obj['obj'];
+    			aobj['scale']=1;
+    			aobj['type']="path";
+    			rectArr[currentPage].push(aobj);
+    			canvas.add(obj['obj']);
+    			forwardPush(obj['obj'], "path", "create");
+    		}
+    		if(obj['action']=="remove" && obj['type']=="paths") {
+    			let handleaobj = new Array();
+    			let aobj=new Array();
+    			handleaobj = obj['obj'];
+    			handleaobj.forEach(function(ekey, evalue){
+    				aobj['obj'] = evalue.obj;
+	    			aobj['scale']=1;
+	    			aobj['type']="path";
+    				rectArr[currentPage].push(aobj);
+    				canvas.add(evalue.obj);
+    			});
+    			forwardPush(obj['obj'], "paths", "create");
+    		}
+
+    	}else{
+    		return;
+    	}
+    	if (actionStack[currentPage].length<=0) {
+    		document.querySelector("#prev").style.color = "grey";
+    	}
+	}
+
+	function forwardAction(){
+		if (forwardStack[currentPage] && forwardStack.hasOwnProperty(currentPage) && forwardStack[currentPage].length>0) {
+    		let obj=forwardStack[currentPage].pop();
+    		if (obj['action']=="remove" && obj['type']=="path") {
+    			let aobj=new Array();
+    			aobj['obj']=obj['obj'];
+    			aobj['scale']=1;
+    			aobj['type']="path";
+    			rectArr[currentPage].push(aobj);
+    			canvas.add(obj['obj']);
+    			stackPush(obj['obj'], "path", "create", "forward");
+    		}
+
+    		if (obj['action']=="create" && obj['type']=="rect") {
+    			for (let i = 0; i < rectArr[currentPage].length; i++) {
+					if(rectArr[currentPage][i]['obj']['currentWidth']==obj['obj']['currentWidth'] && 
+						rectArr[currentPage][i]['obj']['currentHeight']==obj['obj']['currentHeight']){
+						rectArr[currentPage].splice(i, 1);
+					}
+				};
+	    		canvas.remove(obj['obj']);
+    			stackPush(obj['obj'], "rect", "remove", "forward");	
+    		}
+    		if (obj['action']=="create" && obj['type']=="path") {
+    			for (let i = 0; i < rectArr[currentPage].length; i++) {
+					if(rectArr[currentPage][i]['obj']['currentWidth']==obj['obj']['currentWidth'] && 
+						rectArr[currentPage][i]['obj']['currentHeight']==obj['obj']['currentHeight']){
+						rectArr[currentPage].splice(i, 1);
+					}
+				};
+	    		canvas.remove(obj['obj']);
+    			stackPush(obj['obj'], "path", "remove", "forward");	
+    		}
+    		if (obj['action']=="create" && obj['type']=="paths") {
+    			let handleaobj = new Array();
+    			let aobj=new Array();
+    			handleaobj = obj['obj'];
+    			for (let i = 0; i < rectArr[currentPage].length; i++) {
+    				handleaobj.forEach(function(ekey, evalue){
+    					if(rectArr[currentPage][i]['obj']['currentWidth']==evalue.obj.currentWidth &&
+    						rectArr[currentPage][i]['obj']['currentHeight']==evalue.obj.currentHeight){
+    						rectArr[currentPage].splice(i, 1);
+    					}
+    					evalue.obj.remove();
+    				});
+    			}
+    			stackPush(obj['obj'], "paths", "remove", "forward");
+    		}
+    	}else{
+    		return;
+    	}
+    	if (forwardStack[currentPage].length<=0) {
+    		document.querySelector("#next").style.color = "grey";
+    	}
+	}
+
+	function stackPush(obj, type, action, status){
+		if(status=="click"){
+    		forwardStack[currentPage]=new Array();
+    		document.querySelector("#prev").removeAttribute("style");
+    		document.querySelector("#next").style.color = "grey";
+    	}
+
+    	let each=new Array();
+		each["type"]=type;
+		each["obj"]=obj;
+    	each['action']=action;
+		if (actionStack.hasOwnProperty(currentPage)) {
+			if(each['action']=="create") {
+	    		canvas.remove(each["obj"]);
+				canvas.add(each["obj"]);
+			}
+			actionStack[currentPage].push(each);	
+		}else{
+			if(each['action']=="create") {
+	    		canvas.remove(each["obj"]);
+				canvas.add(each["obj"]);
+			}
+			actionStack[currentPage]=new Array(each);
+		}
+		document.querySelector("#prev").removeAttribute("style");
+	}
+	function forwardPush(obj, type, action){
+		let each=new Array();
+		each["type"]=type;
+		each["obj"]=obj;
+    	each['action']=action;
+		if (forwardStack.hasOwnProperty(currentPage)) {
+			forwardStack[currentPage].push(each);	
+		}else{
+			forwardStack[currentPage]=new Array(each);
+		}
+		document.querySelector("#next").removeAttribute("style");
+	}
+
+	// minimize whole block
+	function minimize(selector, name, status = false){
+		if (status === false) {
+			nameTagctx.clearRect(0,0,nameTagCanvas.width,nameTagCanvas.height);
+			nameTagCanvas.width = 100;
+			nameTagCanvas.height = 25;
+			drawTag(name);
+			(function(){
+				let dataURL = nameTagCanvas.toDataURL('image/png');
+				fabric.Image.fromURL(dataURL, function(image){
+					image.set({
+						left: window.screen.availWidth/2,
+						top: window.screen.availHeight/2,
+						width: 100,
+						height: 25,
+						angle: 0,
+						url: 'tag',
+						tag: dataURL,
+						selector: selector,
+					})
+					.setCoords();
+					image.selection = true;
+					image.lockRotation=false;
+					image.lockMovementX=false;
+					image.lockMovementY=false;
+					image.hoverCursor="pointer";
+					image.hasControls = image.hasBorders = false;
+					canvas.add(image);
+					// let each=new Array();
+					// each["type"]="aboard";
+					// each["obj"]=image;
+					// each["url"]='abd';
+					// each["scale"]=1;
+					// if (rectArr.hasOwnProperty(currentPage)) {
+					// 	rectArr[currentPage].push(each);
+					// }else{
+					// 	rectArr[currentPage]=new Array(each);
+					// }
+				});
+			})();
+		}
+		selector.style.display = "none";
+		document.getElementById("centerdiv").style.display = "block";
+	}
+
+	// close whole block
+	function close(selector){
+		selector.remove();
+		document.getElementById("centerdiv").style.display = "block";
+	}
+
+	// making a tag
+    let tag = '';
+    let nameTagCanvas = document.getElementById('createNameTag');
+    let nameTagctx = nameTagCanvas.getContext("2d");
+	String.prototype.Blength = function() { 
+		let arr = this.match(/[^\x00-\xff]/ig); 
+		return  arr == null ? this.length : this.length + arr.length; 
+	 } 
+	 function drawTag(name){
+		roundRect(nameTagctx, 0, 0, nameTagCanvas.width, nameTagCanvas.height, 0, 1, false, name);
+	 }
+	 function roundRect(nctx, x, y, width, height, radius, fill, stroke, name) {
+		if (typeof stroke == 'undefined') {
+			stroke = true;
+		}
+		if (typeof radius === 'undefined') {
+			radius = 5;
+		}
+		if (typeof radius === 'number') {
+			radius = {tl: radius, tr: radius, br: radius, bl: radius};
+		} else {
+			let defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+			for (let side in defaultRadius) {
+				radius[side] = radius[side] || defaultRadius[side];
+			}
+		}
+		nctx.beginPath();
+		nctx.moveTo(x + radius.tl, y);
+		nctx.lineTo(x + width - radius.tr, y);
+		nctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+		nctx.lineTo(x + width, y + height - radius.br);
+		nctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+		nctx.lineTo(x + radius.bl, y + height);
+		nctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+		nctx.lineTo(x, y + radius.tl);
+		nctx.quadraticCurveTo(x, y, x + radius.tl, y);
+		if (fill) {
+			nctx.fillStyle="#666666";
+			nctx.fill();
+		}
+		if (stroke) {
+			nctx.stroke();
+		}
+		if(name) {
+			nctx.font="16px Arial";
+			if(name.Blength() <= 12) {
+				nctx.textAlign = "center";
+				nctx.fillStyle = "#FFFFFF";
+				nctx.fillText(name, nameTagCanvas.width/2, (nameTagCanvas.height*3.5)/5);
+			} else {
+				nctx.textAlign = "start";
+				nctx.fillStyle="#FFFFFF";
+				nctx.fillText(name, 5, (nameTagCanvas.height*3.5)/5);
+			}
+		}
+		nctx.closePath();
+	 }
+
+	// fade
+	 function startFocusOut(el){
+		document.addEventListener("click", function(){
+			el.style.display = "none";
+			document.removeEventListener("click", function(){});
+		});
+	 }
+	 function startFocusIn(el, display){
+		if (el.classList.contains('is-hidden')){
+			el.classList.remove('is-hidden');
+		}
+		el.style.opacity = 0;
+		el.style.display = display || "block";
+		(function fade() {
+			let val = parseFloat(el.style.opacity);
+			if (!((val += .1) > 1)) {
+				el.style.opacity = val;
+				requestAnimationFrame(fade);
+			}
+		})();
+	 }
+
+	 function goback(){
+	 	if(history.length > 1) history.go(-1);
+	 	else window.close();
+	 }
+
+	// DOMs
+	// let scrollToNext = false;
+	// window.addEventListener("scroll", function(){
+	// 	window.onscroll = function(ev) {
+	// 		if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+	// 			console.log("Bottom of page");
+	// 			// window.scrollTo(0, document.body.scrollHeight-1);
+	// 			if (scrollToNext) {
+	// 				renderPage(currentPage);
+	// 				scrollToNext = false;
+	// 			}
+	// 			scrollToNext = true;
+	// 		}
+	// 	};
+	// });
+	// ----------------------------------
+	// window.onscroll = function(ev) {
+	// 	if (scrollToNext) {
+	// 		window.scrollTo(0, 0);
+	// 		renderPage(currentPage);
+	// 		scrollToNext = false;
+	// 	}
+	// 	if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+	// 		console.log("Bottom of page");
+	// 		scrollToNext = true;
+	// 	}
+	// };
+
+	canvas.on("path:created", function(e){
+		if (e.path)  {
+			e.path.lockRotation = true;
+			e.path.lockMovementX = true;
+			e.path.lockMovementY = true;
+			e.path.lockScalingX = true;
+			e.path.lockScalingY = true;
+			e.path.lockUniScaling = true;
+			e.path.hasControls = true;
+			e.path.hasBorders = true;
+			canvas.moveTo(e.path, 1);
+		}
+		let each = new Array();
+		each["type"]="path";
+		each["obj"]=e.path;
+		if (rectArr.hasOwnProperty(currentPage)) {
+			rectArr[currentPage].push(each);	
+		}else{
+			rectArr[currentPage]=new Array(each);
+		}
+		stackPush(e.path, "path", "create", "click");
+	});
+
+	// right click to call menu
+	document.querySelector("body").addEventListener("contextmenu", function(e){
+		e.preventDefault();
+		let cntnr = document.querySelector("#cntnr");
+		cntnr.style.left = e.clientX+"px";
+		cntnr.style.top = e.clientY+"px";
+		startFocusIn(cntnr);
+		startFocusOut(cntnr);
+	});
+
+	let x = 0, y = 0;
+	document.querySelector("#centerdiv").addEventListener("mousedown", function(e){
+		switch(pen){
+			case 'crop':
+				x = e.offsetX;
+				y = e.offsetY;
+				break;
+		}
+	});
+	document.querySelector("#centerdiv").addEventListener("touchstart", function(e){
+		switch(pen){
+			case 'crop':
+				x = e.changedTouches[0].pageX;
+				y = e.changedTouches[0].pageY;
+				break;
+		}
+	});
+
+	document.querySelector("#centerdiv").addEventListener("mouseup", function(e){
+		switch(pen){
+			case 'crop':
+				capture(x, e.offsetX, y, e.offsetY);
+				canvas.selectionColor = 'rgba(0,0,255,0.2)';
+				canvas.selectionLineWidth = 1;
+				canvas.defaultCursor="default";
+				canvas.selection = true;
+				document.querySelector("#crop").style.color = 'rgb(51, 51, 51)';
+				pen = "default";
+				break;
+		}
+	});
+	document.querySelector("#centerdiv").addEventListener("touchend", function(e){
+		switch(pen){
+			case 'crop':
+				capture(x, e.changedTouches[0].pageX, y, e.changedTouches[0].pageY);
+				canvas.selectionColor = 'rgba(0,0,255,0.2)';
+				canvas.selectionLineWidth = 1;
+				canvas.defaultCursor="default";
+				canvas.selection = true;
+				document.querySelector("#crop").style.color = 'rgb(51, 51, 51)';
+				pen = "default";
+				break;
+		}
+	});
+
+	// call menu to left or right depends on e.pageX is greater than canvas_width/2 or not
+	document.getElementById("callmenu").addEventListener("click", function(e){
+	let menubtn = document.querySelector("#menubtn"),
+		menulist_v = document.querySelector("#menulist_v"),
+		menulist_h = document.querySelector("#menulist_h"),
+		left = document.querySelectorAll(".left"),
+		middle = document.querySelectorAll(".middle"),
+		right = document.querySelectorAll(".right");
+		menubtn.style.left = "";
+		menubtn.style.right = "";
+		menulist_v.style.left = "";
+		menulist_v.style.right = "";
+		menulist_h.style.left = "";
+		menulist_h.style.right = "";
+		if (e.pageX > canvas_width/2) {
+			menubtn.style.right = "5px";
+			menulist_v.style.right = "5px";
+			menulist_h.style.right = "105px";
+			left.forEach(function(list){
+				if(!list.classList.contains('right-side-left')){
+					list.classList.remove('left-side-left');
+					list.classList.add('right-side-left');
+				}
+			});
+			middle.forEach(function(list){
+				if(!list.classList.contains('right-side-middle')){
+					list.classList.remove('left-side-middle');
+					list.classList.add('right-side-middle');
+				}
+			});
+			right.forEach(function(list){
+				if(!list.classList.contains('right-side-right')){
+					list.classList.remove('left-side-right');
+					list.classList.add('right-side-right');
+				}
+			});
+		} else {
+			menubtn.style.left = "5px";
+			menulist_v.style.left = "5px";
+			menulist_h.style.left = "105px";
+			left.forEach(function(list){
+				if(!list.classList.contains('left-side-left')){
+					list.classList.remove('right-side-left');
+					list.classList.add('left-side-left');
+				}
+			});
+			middle.forEach(function(list){
+				if(!list.classList.contains('left-side-middle')){
+					list.classList.remove('right-side-middle');
+					list.classList.add('left-side-middle');
+				}
+			});
+			right.forEach(function(list){
+				if(!list.classList.contains('left-side-right')){
+					list.classList.remove('right-side-right');
+					list.classList.add('left-side-right');
+				}
+			});
+		}
+		menubtn.style.bottom = "40px";
+	});
+
+	document.getElementById("menustatus").addEventListener("click", function(){
+		let menubtn = document.getElementById("menubtn");
+		let menustatus = document.getElementById("menustatus");
+		let menulist_v_h = document.querySelectorAll(".menulist_v_h");
+		if (menubtn.style.display === "none") {
+			menubtn.style.display = "block";
+			menustatus.innerHTML = "Hide Menu";
+		} else {
+			menubtn.style.display = "none";
+			menustatus.innerHTML = "Show Menu";
+			menulist_v_h.forEach(function(list){
+				list.style.display = "none";
+			});
+		}
+	});
+
+	// hide/show the menulist
+	document.getElementById("menubtn").addEventListener("click", function(){
+		let menulist_v_h = document.querySelectorAll(".menulist_v_h");
+		menulist_v_h.forEach(function(list){
+			if (list.style.display === "none") {
+				startFocusIn(list);
+			} else if (list.style.display === "block") {
+				list.style.display = "none";
+			}
+		});
+	});
+
+	// chosen items will turn red expect the elements in menulistArray
+	// if id match with the index of array, it will skip, otherwise it will turn red. ** red means selected **
+	let menulistArray = ['fullscreen', 'eraser_all', 'blackboard', 'prev', 'next', 'prevpage', 'lastpage', 'nextpage', 'save'];
+	document.querySelectorAll(".menulist").forEach(function(menulist){
+		menulist.addEventListener("click", function(){
+			switch (menulistArray.indexOf(this.id)) {
+				case -1:
+					if (mode === this.id) {
+						if(this.style.color === "rgb(255, 0, 0)") {
+							this.style.color = "rgb(51, 51, 51)";
+							(mode === "pencil") ? canvas.isDrawingMode = false : "";
+						} else {
+							this.style.color = "rgb(255, 0, 0)";
+							mode = this.id;
+							(mode === 'pencil') ? draw(mode) : canceldraw();
+							(mode === 'crop') ? crop() : '';
+							(mode === 'drag') ? drag() : canceldrag();
+						}
+					} else {
+						document.querySelectorAll(".menulist").forEach(function(mlist){
+							if (mlist.id === "prev" || mlist.id === "next") return;
+							mlist.style.color = "rgb(51, 51, 51)";
+						});
+						if (this.style.color === "rgb(255, 0, 0)") {
+							this.style.color = "rgb(255, 0, 0";
+							(mode === 'pencil') ? canvas.isDrawingMode = false : '';
+						} else {
+							this.style.color = "rgb(255, 0, 0)";
+							mode = this.id;
+							(mode === 'pencil') ? draw(mode) : canceldraw();
+							(mode === 'crop') ? crop() : '';
+							(mode === 'drag') ? drag() : canceldrag();
+						}
+					}
+					break;
+				default :
+					mode = this.id;
+					(mode === 'blackboard') ? blackboard() : '';
+					(mode === 'prev') ? backAction() : '';
+					(mode === 'next') ? forwardAction() : '';
+					(mode === 'nextpage') ? nextpage() : '';
+					(mode === 'lastpage') ? lastpage() : '';
+					// return;
+					break;
+			}
+		});
+	});
+
+	// choose color blocks
+	let prevblock;
+	document.querySelectorAll(".color-blocks").forEach(function(block){
+		block.addEventListener("click", function(){
+			(prevblock) ? document.querySelector("."+prevblock).style.border = "2px solid rgb(0, 0, 0)" : "";
+			this.style.border = "2px solid rgb(192,192,192)";
+			let blocks = {
+				list: block.classList,
+				color: {
+					black: "rgb(0, 0, 0)", 
+					white: "rgb(255, 255, 255)", 
+					red: "rgb(255, 0, 0)", 
+					green: "rgb(0, 255, 0)", 
+					blue: "rgb(0, 0, 255)", 
+					yellow: "rgb(255, 255, 0)", 
+					cyan: "rgb(0, 255, 255)", 
+					pink: "rgb(255, 0, 255)", 
+					rainbow: "rgb(0, 0, 0)" // 
+				}
+			};
+			switch (true) {
+				case blocks.list.contains("black") :
+					prevblock = "black";
+					canvas.freeDrawingBrush.color = blocks.color.black;
+					break;
+				case blocks.list.contains("white") :
+					prevblock = "white";
+					canvas.freeDrawingBrush.color = blocks.color.white;
+					break;
+				case blocks.list.contains("red") :
+					prevblock = "red";
+					canvas.freeDrawingBrush.color = blocks.color.red;
+					break;
+				case blocks.list.contains("green") :
+					prevblock = "green";
+					canvas.freeDrawingBrush.color = blocks.color.green;
+					break;
+				case blocks.list.contains("blue") :
+					prevblock = "blue";
+					canvas.freeDrawingBrush.color = blocks.color.blue;
+					break;
+				case blocks.list.contains("yellow") :
+					prevblock = "yellow";
+					canvas.freeDrawingBrush.color = blocks.color.yellow;
+					break;
+				case blocks.list.contains("cyan") :
+					prevblock = "cyan";
+					canvas.freeDrawingBrush.color = blocks.color.cyan;
+					break;
+				case blocks.list.contains("pink") :
+					prevblock = "pink";
+					canvas.freeDrawingBrush.color = blocks.color.pink;
+					break;
+				case blocks.list.contains("rainbow") :
+					prevblock = "rainbow";
+				default :
+					break;
+			};
+		});
+	});
+	
+	document.getElementById("drawing-width").addEventListener("change", function(e){
+		let drawing_width = document.querySelector("#drawing-width");
+		canvas.freeDrawingBrush.width = parseInt(drawing_width.value);
+		document.getElementById("pencil_width").innerHTML = "粗細："+parseInt(drawing_width.value);
+	});
+
+	// long press #pencil will show the drawtool menu
+	let upTimer;
+	document.getElementById("pencil").addEventListener("mousedown", function(){
+		upTimer = window.setTimeout(function(){drawTool()}, 300);
+		return false;
+	});
+	document.getElementById("pencil").addEventListener("mouseup", function(){
+		clearTimeout(upTimer);
+		return false;
+	});
+	document.getElementById("pencil").addEventListener("touchstart", function(){
+		upTimer = window.setTimeout(function(){drawTool()}, 300);
+		return false;
+	});
+	document.getElementById("pencil").addEventListener("touchend", function(){
+		clearTimeout(upTimer);
+		return false;
+	});
+</script>
